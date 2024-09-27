@@ -1,0 +1,12 @@
+Introduction to Threejs
+================================================
+Kelas dimulai di menit 30! 
+Jangan lupa absen dari binusmaya & lab.slc.net!
+
+[] Scene
+[] Camera
+[] Renderer
+[] Resize Update
+[] Orbit Controls
+
+Documentation => threejs.org
