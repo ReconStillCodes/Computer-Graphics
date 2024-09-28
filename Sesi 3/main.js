@@ -84,7 +84,9 @@ const createObject = () => {
   let point = createPoint(points);
   let line = createLine(points);
   let plane = createPlane();
-  plane.rotation.x = Math.PI / 2;
+  plane.rotation.set(Math.PI / 2, 0, 0);
+  plane.scale.set(0.5, 1);
+  plane.position.set(0, 0, 0);
 
   let objects = [point, line, plane];
 
