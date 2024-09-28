@@ -63,9 +63,120 @@ const createBox = () => {
   scene.add(mesh);
 };
 
+//Skybox creation =================================================
+
+const initSkyboxSide = (path) => {
+  let textureLoader = new THREE.TextureLoader();
+
+  let texture = textureLoader.load(path);
+
+  const material = new THREE.MeshBasicMaterial({
+    color: 0xffffff,
+    map: texture,
+    side: THREE.BackSide,
+  });
+
+  return material;
+};
+
+const initSkybox = () => {
+  let skybox = new THREE.BoxGeometry(100, 100, 100); //Pastikan sizenya besar sehingga semua object bisa dimasukan
+
+  let sidesPath = [
+    //masukan semua Directory asset untuk setiap sisi dari skybok
+    "./assets/Daylight Box_Pieces/Daylight Box_Right.bmp", //right
+    "./assets/Daylight Box_Pieces/Daylight Box_Left.bmp", //left
+    "./assets/Daylight Box_Pieces/Daylight Box_Top.bmp", //top
+    "./assets/Daylight Box_Pieces/Daylight Box_Bottom.bmp", //bottom
+    "./assets/Daylight Box_Pieces/Daylight Box_Front.bmp", //front
+    "./assets/Daylight Box_Pieces/Daylight Box_Back.bmp", //back
+  ];
+
+  const rtMat = initSkyboxSide(sidesPath[0]);
+  const lfMat = initSkyboxSide(sidesPath[1]);
+  const upMat = initSkyboxSide(sidesPath[2]);
+  const dnMat = initSkyboxSide(sidesPath[3]);
+  const ftMat = initSkyboxSide(sidesPath[4]);
+  const bkMat = initSkyboxSide(sidesPath[5]);
+
+  let skyboxMesh = new THREE.Mesh(skybox, [
+    rtMat,
+    lfMat,
+    upMat,
+    dnMat,
+    ftMat,
+    bkMat,
+  ]);
+
+  scene.add(skyboxMesh);
+};
+
+// Model Creation =============================================
+
+import { GLTFLoader } from "./threejs/examples/jsm/loaders/GLTFLoader.js";
+//Import library "GTLFLoader.js"
+//Pastikan Path benar
+
+const createAmbientLight = () => {
+  //Buat lighting terlebih dahulu, karena biasa model terefek oleh light
+
+  //Create Lighting
+  let light = new THREE.AmbientLight(0xffffff, 0.5);
+
+  scene.add(light);
+};
+
+const createModel = () => {
+  let gltfLoader = new GLTFLoader();
+
+  gltfLoader.load("./assets/desert__rocks__stones__pack/scene.gltf", (gltf) => {
+    let model = gltf.scene;
+    model.scale.set(0.1, 0.1, 0.1); //OPastikan scale kecil, karena biasa model defaultnya besar banget
+    model.position.set(3, -5, 3);
+    scene.add(model);
+  });
+};
+
+//Object Creation ====================================================
+
+const createBall = (radius, color) => {
+  let geometry = new THREE.SphereGeometry(radius);
+  let material = new THREE.MeshBasicMaterial({ color: color });
+  let mesh = new THREE.Mesh(geometry, material);
+  return mesh;
+};
+
+const createObject = () => {
+  let ball1 = createBall(1, "red");
+  let ball2 = createBall(2, "blue");
+  let ball3 = createBall(3, "yellow");
+  let ball4 = createBall(4, "green");
+
+  let object = [ball1, ball2, ball3, ball4];
+
+  let pos = [
+    new THREE.Vector3(0, 0, 0),
+    new THREE.Vector3(10, 0, 0),
+    new THREE.Vector3(0, 0, 10),
+    new THREE.Vector3(0, 10, 0),
+  ];
+
+  let idx = 0;
+
+  object.forEach((obj) => {
+    obj.position.copy(pos[idx++]);
+    scene.add(obj);
+  });
+};
+
+// =======================================================================
+
 window.onload = () => {
   init();
-  createBox();
+  createAmbientLight();
+  createObject();
+  initSkybox();
+  createModel();
   render();
 };
 
