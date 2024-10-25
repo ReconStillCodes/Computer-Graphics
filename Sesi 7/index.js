@@ -150,12 +150,16 @@ const createText = (text, size, height, pos) => {
 };
 
 const animate = () => {
-  textList.position.y += 0.1;
+  textList.position.y += 0.05;
 };
 
 window.onload = () => {
   init();
   render();
+
+  const audio = document.getElementById("myAudio");
+  audio.muted = false;
+  audio.play();
 };
 
 window.onresize = () => {
