@@ -156,10 +156,6 @@ const animate = () => {
 window.onload = () => {
   init();
   render();
-
-  const audio = document.getElementById("myAudio");
-  audio.muted = false;
-  audio.play();
 };
 
 window.onresize = () => {
@@ -171,3 +167,13 @@ window.onresize = () => {
 
   renderer.setSize(w, h);
 };
+
+window.addEventListener("keydown", function (event) {
+  if (event.key === "k" || event.key === "K") {
+    const audio = document.getElementById("myAudio");
+    audio.volume = 0.5;
+    audio.play().catch((error) => {
+      console.log("Could not play audio:", error);
+    });
+  }
+});
