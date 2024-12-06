@@ -35,14 +35,14 @@ const init = () => {
 
   document.body.appendChild(renderer.domElement);
 
-  control = new OrbitControls(camera, renderer.domElement);
+  //control = new OrbitControls(camera, renderer.domElement);
 };
 
 const render = () => {
   requestAnimationFrame(render);
   renderer.render(scene, camera);
   animate();
-  control.update();
+  //control.update();
 };
 
 window.onload = () => {
@@ -96,6 +96,11 @@ const createObject = async () => {
   let light = new THREE.AmbientLight("#FFFFFF", 2.5);
   scene.add(light);
 
+  scene.add(createBox(-20, 0, 0, "red"));
+  scene.add(createBox(20, 0, 0, "yellow"));
+  scene.add(createBox(0, 0, -20, "blue"));
+  scene.add(createBox(0, 0, 20, "green"));
+
   try {
     model = await load3DModel("./airplane/scene.gltf");
     model.position.set(0, 0, 0);
@@ -104,6 +109,24 @@ const createObject = async () => {
   } catch (error) {
     console.error("Error loading model, ", error);
   }
+};
+
+const updateCamera = () => {
+  if (!model) return;
+
+  const distanceBehind = 3;
+  const heightAbove = 1;
+
+  const offset = new THREE.Vector3(distanceBehind, heightAbove, 0);
+  console.log(offset);
+
+  offset.applyQuaternion(model.quaternion);
+  camera.position.copy(model.position).add(offset);
+
+  let lookOffset = new THREE.Vector3().copy(model.position);
+  // lookOffset.y += 0.5;
+
+  camera.lookAt(lookOffset);
 };
 
 const animate = () => {
@@ -126,6 +149,8 @@ const animate = () => {
   if (keyPressed.s) {
     rotateDown();
   }
+
+  updateCamera();
 };
 
 // window.addEventListener("keydown", (event) => {
@@ -186,4 +211,12 @@ const rotateUp = () => {
 
 const rotateDown = () => {
   model.rotation.z += rotate;
+};
+
+const createBox = (posx, posy, posz, color) => {
+  let geometry = new THREE.BoxGeometry(2, 10, 2);
+  let material = new THREE.MeshBasicMaterial({ color: color });
+  let mesh = new THREE.Mesh(geometry, material);
+  mesh.position.set(posx, posy, posz);
+  return mesh;
 };
